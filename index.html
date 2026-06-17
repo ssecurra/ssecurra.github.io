@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Securra</title>
+
+  <link rel="icon" type="image/png" href="ico.png">
+  <link rel="shortcut icon" href="ico.png">
+  <link rel="apple-touch-icon" href="ico.png">
+  <style>
+    :root {
+      --bg: #0b1220;
+      --panel: #111827;
+      --panel-2: #0f172a;
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+      --border: #243043;
+      --accent: #6366f1;
+      --accent-2: #4f46e5;
+      --success: #22c55e;
+      --success-2: #16a34a;
+      --danger: #ef4444;
+      --danger-2: #dc2626;
+      --shadow: 0 18px 60px rgba(0,0,0,.35);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: radial-gradient(circle at top, #111827 0, #0b1220 48%, #050816 100%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    button, input, textarea, select { font: inherit; }
+    .hidden { display: none !important; }
+
+    .screen {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+    }
+
+    .auth {
+      width: min(520px, 100%);
+      background: rgba(17, 24, 39, 0.94);
+      border: 1px solid rgba(148, 163, 184, 0.12);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      padding: 28px;
+    }
+
+    .app {
+      width: 100%;
+      min-height: 100vh;
+      background: rgba(10, 15, 28, 0.92);
+    }
+
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      width: 100%;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+      background: rgba(10, 15, 28, 0.94);
+      backdrop-filter: blur(10px);
+    }
+
+    .header-inner {
+      width: 100%;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 260px;
+    }
+    .logo {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--accent), #8b5cf6);
+      display: grid;
+      place-items: center;
+      color: white;
+      font-weight: 800;
+      overflow: hidden;
+      flex: 0 0 auto;
+    }
+    .logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .logo .logo-fallback {
+      display: grid;
+      place-items: center;
+      width: 100%;
+      height: 100%;
+    }
+    h1, h2, h3, p { margin: 0; }
+    h1 { font-size: 26px; }
+    .subtle { color: var(--muted); margin-top: 8px; line-height: 1.55; }
+
+    .tabs, .toolbar, .footer-actions, .actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .tabs { margin: 18px 0 16px; }
+    .tab {
+      border: 1px solid var(--border);
+      background: #0f172a;
+      color: var(--text);
+      border-radius: 12px;
+      padding: 10px 14px;
+      cursor: pointer;
+      transition: transform .08s ease, background .15s ease, border-color .15s ease;
+    }
+    .tab.active { background: var(--accent); border-color: transparent; }
+    .tab:hover { transform: translateY(-1px); }
+    .tab:active { transform: translateY(1px) scale(.98); }
+
+    .field { margin-bottom: 12px; }
+    label { display: block; font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+    .input, .textarea, .select {
+      width: 100%;
+      border: 1px solid var(--border);
+      background: #0b1324;
+      color: var(--text);
+      border-radius: 12px;
+      padding: 12px 13px;
+      outline: none;
+    }
+    .textarea { min-height: 110px; resize: vertical; }
+    .input:focus, .textarea:focus, .select:focus { border-color: rgba(99,102,241,.7); box-shadow: 0 0 0 3px rgba(99,102,241,.15); }
+
+    .btn, .small-btn, .icon-btn {
+      border: 1px solid var(--border);
+      background: #0b1324;
+      color: var(--text);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: transform .08s ease, border-color .15s ease, background .15s ease, color .15s ease, opacity .15s ease;
+      white-space: nowrap;
+    }
+    .btn:hover, .small-btn:hover, .icon-btn:hover { transform: translateY(-1px); }
+    .btn:active, .small-btn:active, .icon-btn:active { transform: translateY(1px) scale(.98); }
+    .btn { padding: 11px 14px; }
+    .btn.primary { background: linear-gradient(135deg, var(--accent), var(--accent-2)); border-color: transparent; }
+    .btn.success { background: linear-gradient(135deg, var(--success), var(--success-2)); border-color: transparent; }
+    .btn.soft { background: #111827; }
+    .btn.danger { background: rgba(239, 68, 68, .1); border-color: rgba(239, 68, 68, .3); color: #fecaca; }
+    .small-btn { padding: 8px 10px; font-size: 13px; }
+    .icon-btn {
+      width: 36px;
+      height: 36px;
+      display: inline-grid;
+      place-items: center;
+      padding: 0;
+      font-size: 16px;
+      flex: 0 0 auto;
+    }
+    .icon-btn.copy { background: rgba(148,163,184,.08); }
+    .icon-btn.edit { background: rgba(59,130,246,.14); border-color: rgba(59,130,246,.28); color: #bfdbfe; }
+    .icon-btn.delete { background: rgba(239,68,68,.12); border-color: rgba(239,68,68,.3); color: #fecaca; }
+    .icon-btn.toggle { background: rgba(148,163,184,.08); }
+    .icon-btn.flash-ok { background: rgba(34,197,94,.18) !important; border-color: rgba(34,197,94,.45) !important; color: #dcfce7 !important; }
+    .icon-btn.flash-bad { background: rgba(239,68,68,.18) !important; border-color: rgba(239,68,68,.45) !important; color: #fee2e2 !important; }
+
+    .notice {
+      margin-top: 12px;
+      padding: 12px 13px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: #0b1324;
+      color: var(--muted);
+      line-height: 1.45;
+      font-size: 14px;
+    }
+    .notice.error { border-color: rgba(239,68,68,.32); color: #fecaca; background: rgba(239,68,68,.08); }
+    .notice.ok { border-color: rgba(34,197,94,.28); color: #bbf7d0; background: rgba(34,197,94,.08); }
+
+    .app-main { width: 100%; padding: 18px; }
+    .page-grid {
+      width: 100%;
+      display: grid;
+      grid-template-columns: minmax(0, 1.55fr) minmax(340px, .9fr);
+      gap: 18px;
+      align-items: start;
+    }
+    .panel {
+      min-width: 0;
+      border: 1px solid rgba(148, 163, 184, 0.12);
+      background: rgba(17, 24, 39, 0.92);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+    }
+    .panel-inner { padding: 16px; }
+    .status-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-top: 8px;
+    }
+    .pill {
+      padding: 8px 11px;
+      border: 1px solid var(--border);
+      background: #0b1324;
+      border-radius: 999px;
+      color: var(--muted);
+      font-size: 13px;
+      white-space: nowrap;
+    }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid var(--border);
+      background: #0b1324;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .toolbar {
+      margin: 14px 0;
+      align-items: center;
+    }
+    .toolbar > * { flex: 1 1 160px; }
+    .toolbar .search-wrap { flex: 2 1 260px; position: relative; }
+    .search-icon {
+      position: absolute;
+      left: 13px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      pointer-events: none;
+      font-size: 14px;
+    }
+    .search-wrap .input { padding-left: 38px; }
+
+    .table-wrap {
+      border: 1px solid var(--border);
+      background: #0b1324;
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    .table-scroll {
+      overflow: auto;
+      max-height: calc(100vh - 250px);
+    }
+    table { width: 100%; border-collapse: collapse; min-width: 860px; table-layout: fixed; }
+    thead th {
+      text-align: left;
+      font-size: 12px;
+      color: var(--muted);
+      padding: 13px 14px;
+      background: #101a2d;
+      border-bottom: 1px solid var(--border);
+    }
+    tbody td {
+      padding: 13px 14px;
+      border-bottom: 1px solid rgba(36,48,67,.8);
+      font-size: 14px;
+      vertical-align: top;
+      overflow: hidden;
+    }
+    tbody tr { cursor: pointer; }
+    tbody tr:hover { background: rgba(255,255,255,.02); }
+    tbody tr.active { background: rgba(99,102,241,.12); }
+    .muted { color: var(--muted); font-size: 12px; margin-top: 4px; }
+    .truncate { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
+
+    .detail {
+      position: sticky;
+      top: 88px;
+      border: 1px solid rgba(148, 163, 184, 0.12);
+      background: rgba(17, 24, 39, 0.92);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      padding: 16px;
+      max-height: calc(100vh - 106px);
+      overflow: auto;
+    }
+    .detail h3 { font-size: 20px; }
+    .detail .subtle { margin-bottom: 10px; }
+    .kv {
+      border: 1px solid var(--border);
+      background: #0f172a;
+      border-radius: 12px;
+      padding: 11px 12px;
+      margin-top: 10px;
+    }
+    .kv label { margin: 0 0 5px; font-size: 12px; }
+    .kv .line { display: flex; justify-content: space-between; gap: 10px; align-items: center; }
+    .kv .value { flex: 1 1 auto; min-width: 0; display: block; }
+    .kv .scroll-box {
+      max-height: 132px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+      line-height: 1.5;
+      padding-right: 4px;
+    }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 13px;
+      word-break: break-word;
+    }
+    .empty { text-align: center; padding: 26px 18px; color: var(--muted); }
+    .detail-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      background: rgba(2, 6, 23, .72);
+      z-index: 50;
+    }
+    .modal {
+      width: min(720px, 100%);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: #111827;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .modal header, .modal footer {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      background: #0f172a;
+    }
+    .modal footer { border-top: 1px solid var(--border); border-bottom: none; justify-content: flex-end; }
+    .modal main { padding: 16px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .hint { margin-top: 12px; color: var(--muted); font-size: 13px; line-height: 1.5; }
+
+    .pick-field {
+      border: 1px solid var(--border);
+      background: #0b1324;
+      border-radius: 12px;
+      padding: 12px 13px;
+    }
+    .pick-field .actions { margin-top: 6px; }
+
+    @media (max-width: 1200px) {
+      .page-grid { grid-template-columns: 1fr; }
+      .detail { position: static; max-height: none; }
+      .table-scroll { max-height: none; }
+    }
+    @media (max-width: 720px) {
+      .grid-2 { grid-template-columns: 1fr; }
+      .toolbar > * { flex: 1 1 100%; }
+      table { min-width: 860px; }
+      .header-inner { padding: 12px 14px; }
+      .app-main { padding: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="authScreen" class="screen">
+    <div class="auth">
+      <div class="brand">
+	<div class="logo"><img src="ico.png" alt="App icon"></div>
+        <div>
+          <h1>Securra</h1>
+          <p class="subtle">Зашифрованное хранилище паролей</p>
+        </div>
+      </div>
+
+      <div class="tabs">
+        <button id="tabNew" class="tab active">Новый файл</button>
+        <button id="tabOpen" class="tab">Открыть файл</button>
+      </div>
+
+      <div id="newBox">
+        <div class="field">
+          <label for="master1">Мастер-пароль</label>
+          <input id="master1" class="input" type="password" placeholder="Придумайте пароль" autocomplete="new-password">
+        </div>
+        <div class="field">
+          <label for="master2">Повторите пароль</label>
+          <input id="master2" class="input" type="password" placeholder="Повторите пароль" autocomplete="new-password">
+        </div>
+        <button id="createBtn" class="btn primary">Создать новое хранилище</button>
+      </div>
+
+      <div id="openBox" class="hidden">
+        <div class="field">
+          <label>Файл хранилища</label>
+          <div class="pick-field">
+            <div class="actions">
+              <button id="pickFileBtn" class="btn soft" type="button">Выбрать файл</button>
+              <span id="pickedFileName" class="pill">Файл не выбран</span>
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <label for="openPassword">Мастер-пароль</label>
+          <input id="openPassword" class="input" type="password" placeholder="Введите пароль" autocomplete="current-password">
+        </div>
+        <button id="openBtn" class="btn primary">Открыть файл</button>
+        <input id="vaultFile" class="hidden" type="file" accept=".sec,.json,application/json">
+      </div>
+
+      <div id="authNotice" class="notice hidden"></div>
+      <p class="hint">Файл можно сохранить через «Сохранить изменения» или «Сохранить как». При закрытии страницы данные пропадают из памяти.</p>
+    </div>
+  </div>
+
+  <div id="appScreen" class="app hidden">
+    <div class="header">
+      <div class="header-inner">
+        <div class="brand">
+          <div class="logo">
+            <img src="ico.png" alt="App icon">
+          </div>
+          <div>
+            <h2>Securra</h2>
+            <p class="subtle">Хранилище паролей</p>
+          </div>
+        </div>
+        <div class="actions">
+          <span class="pill" id="statusTag">Открыто в памяти</span>
+          <span class="pill" id="fileNamePill">vault.vault</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="app-main">
+      <div class="page-grid">
+        <section class="panel">
+          <div class="panel-inner">
+            <div class="status-row">
+              <span class="tag" id="countTag">0 записей</span>
+              <span class="tag">Нажмите на строку, чтобы открыть запись</span>
+            </div>
+
+            <div class="toolbar">
+              <div class="search-wrap">
+                <span class="search-icon">🔎</span>
+                <input id="search" class="input" placeholder="Поиск">
+              </div>
+              <select id="sort" class="select">
+                <option value="name">Сортировка: по названию</option>
+                <option value="recent">Сортировка: по изменению</option>
+              </select>
+              <button id="addBtn" class="btn primary">+ Добавить</button>
+              <button id="saveBtn" class="btn success">Сохранить изменения</button>
+              <button id="saveAsBtn" class="btn soft">Сохранить как</button>
+              <button id="changeBtn" class="btn soft">Сменить пароль</button>
+              <button id="lockBtn" class="btn danger">Закрыть</button>
+            </div>
+
+            <div class="table-wrap">
+              <div class="table-scroll">
+                <table>
+                  <thead>
+                    <tr>
+                      <th style="width:23%">Ресурс</th>
+                      <th style="width:20%">Почта</th>
+                      <th style="width:16%">Телефон</th>
+                      <th>Комментарий</th>
+                      <th style="width:14%">Действия</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tableBody"></tbody>
+                </table>
+                <div id="emptyState" class="empty hidden">Пока нет записей. Нажмите «Добавить».</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <aside class="detail">
+          <h3 id="detailTitle">Выберите запись</h3>
+          <p class="subtle" id="detailMeta">Здесь появится подробная информация после выбора определенной строки из общего списка.</p>
+          <div id="detailBody">
+            <div class="kv"><label>Подсказка</label><div class="line"><span>Откройте любую строку в таблице.</span></div></div>
+          </div>
+          <div class="detail-actions">
+            <button id="editBtn" class="icon-btn edit" disabled title="Редактировать">✎</button>
+            <button id="deleteBtn" class="icon-btn delete" disabled title="Удалить">🗑</button>
+          </div>
+          <p class="hint">Не забывайте сохранять изменения. Несохраненные данные будут безвозвратно утеряны!</p>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <div id="entryModalBg" class="modal-backdrop" role="dialog" aria-modal="true">
+    <div class="modal">
+      <header>
+        <h3 id="entryModalTitle">Добавить запись</h3>
+        <button id="closeEntryModal" class="small-btn">Закрыть</button>
+      </header>
+      <main>
+        <div class="grid-2">
+          <div class="field">
+            <label for="entryName">Название ресурса *</label>
+            <input id="entryName" class="input" placeholder="Gmail, GitHub, Telegram...">
+          </div>
+          <div class="field">
+            <label for="entryEmail">Почта</label>
+            <input id="entryEmail" class="input" placeholder="mail@example.com">
+          </div>
+          <div class="field">
+            <label for="entryPhone">Телефон</label>
+            <input id="entryPhone" class="input" placeholder="+371 ...">
+          </div>
+          <div class="field">
+            <label for="entryPassword">Пароль *</label>
+            <input id="entryPassword" class="input" type="password" placeholder="Пароль ресурса">
+          </div>
+        </div>
+        <div class="field">
+          <label for="entryComment">Комментарий</label>
+          <textarea id="entryComment" class="textarea" placeholder="Например: личный аккаунт, рабочий, 2FA и т.д."></textarea>
+        </div>
+        <div id="entryNotice" class="notice hidden"></div>
+      </main>
+      <footer>
+        <button id="saveEntryBtn" class="btn primary">Сохранить</button>
+      </footer>
+    </div>
+  </div>
+
+  <div id="changeModalBg" class="modal-backdrop" role="dialog" aria-modal="true">
+    <div class="modal">
+      <header>
+        <h3>Сменить мастер-пароль</h3>
+        <button id="closeChangeModal" class="small-btn">Закрыть</button>
+      </header>
+      <main>
+        <div class="grid-2">
+          <div class="field">
+            <label for="oldMaster">Текущий пароль</label>
+            <input id="oldMaster" class="input" type="password" placeholder="Старый мастер-пароль">
+          </div>
+          <div class="field">
+            <label for="newMaster1">Новый пароль</label>
+            <input id="newMaster1" class="input" type="password" placeholder="Новый мастер-пароль">
+          </div>
+          <div class="field">
+            <label for="newMaster2">Повторите новый пароль</label>
+            <input id="newMaster2" class="input" type="password" placeholder="Повторите новый пароль">
+          </div>
+        </div>
+        <div id="changeNotice" class="notice hidden"></div>
+      </main>
+      <footer>
+        <button id="saveChangeBtn" class="btn primary">Сохранить</button>
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    const enc = new TextEncoder();
+    const dec = new TextDecoder();
+    let currentVault = null;
+    let currentKey = null;
+    let selectedId = null;
+    let editingId = null;
+    let currentFileName = 'securra.sec';
+    let currentFileHandle = null;
+    let selectedFile = null;
+
+    const $ = (id) => document.getElementById(id);
+    const els = {
+      authScreen: $("authScreen"), appScreen: $("appScreen"), tabNew: $("tabNew"), tabOpen: $("tabOpen"), newBox: $("newBox"), openBox: $("openBox"),
+      master1: $("master1"), master2: $("master2"), createBtn: $("createBtn"), vaultFile: $("vaultFile"), pickFileBtn: $("pickFileBtn"), pickedFileName: $("pickedFileName"),
+      openPassword: $("openPassword"), openBtn: $("openBtn"), authNotice: $("authNotice"), statusTag: $("statusTag"), countTag: $("countTag"), fileNamePill: $("fileNamePill"),
+      search: $("search"), sort: $("sort"), addBtn: $("addBtn"), saveBtn: $("saveBtn"), saveAsBtn: $("saveAsBtn"), changeBtn: $("changeBtn"), lockBtn: $("lockBtn"),
+      tableBody: $("tableBody"), emptyState: $("emptyState"), detailTitle: $("detailTitle"), detailMeta: $("detailMeta"), detailBody: $("detailBody"), editBtn: $("editBtn"),
+      deleteBtn: $("deleteBtn"), entryModalBg: $("entryModalBg"), entryModalTitle: $("entryModalTitle"), closeEntryModal: $("closeEntryModal"), entryName: $("entryName"),
+      entryEmail: $("entryEmail"), entryPhone: $("entryPhone"), entryPassword: $("entryPassword"), entryComment: $("entryComment"), saveEntryBtn: $("saveEntryBtn"),
+      entryNotice: $("entryNotice"), changeModalBg: $("changeModalBg"), closeChangeModal: $("closeChangeModal"), oldMaster: $("oldMaster"), newMaster1: $("newMaster1"),
+      newMaster2: $("newMaster2"), saveChangeBtn: $("saveChangeBtn"), changeNotice: $("changeNotice")
+    };
+
+    function uuid() { return crypto.randomUUID ? crypto.randomUUID() : ('id-' + Math.random().toString(36).slice(2) + Date.now().toString(36)); }
+    function nowIso() { return new Date().toISOString(); }
+    function fmtDate(iso) { try { return new Intl.DateTimeFormat('ru-RU', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(iso)); } catch { return iso || '—'; } }
+    function showNotice(el, text, kind = 'error') { el.textContent = text; el.className = `notice ${kind}`; el.classList.remove('hidden'); }
+    function hideNotice(el) { el.className = 'notice hidden'; el.textContent = ''; }
+    function b64(bytes) { let s = ''; for (let i = 0; i < bytes.length; i += 0x8000) s += String.fromCharCode(...bytes.subarray(i, i + 0x8000)); return btoa(s); }
+    function unb64(str) { const s = atob(str); const arr = new Uint8Array(s.length); for (let i = 0; i < s.length; i++) arr[i] = s.charCodeAt(i); return arr; }
+    function randBytes(len = 16) { const arr = new Uint8Array(len); crypto.getRandomValues(arr); return arr; }
+    function escapeHtml(v) { return String(v ?? '').replace(/[&<>'"]/g, s => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[s])); }
+
+    async function copyText(text) { try { await navigator.clipboard.writeText(text); return true; } catch { return false; } }
+    function flashButton(btn, ok) {
+      const icon = btn.dataset.icon || '⧉';
+      btn.textContent = ok ? '✓' : '×';
+      btn.classList.add(ok ? 'flash-ok' : 'flash-bad');
+      setTimeout(() => {
+        btn.textContent = icon;
+        btn.classList.remove('flash-ok', 'flash-bad');
+      }, 900);
+    }
+
+    async function deriveKey(password, saltB64, iterations) {
+      const salt = unb64(saltB64);
+      const material = await crypto.subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, ['deriveKey']);
+      return crypto.subtle.deriveKey(
+        { name: 'PBKDF2', salt, iterations, hash: 'SHA-256' },
+        material,
+        { name: 'AES-GCM', length: 256 },
+        false,
+        ['encrypt', 'decrypt']
+      );
+    }
+
+    async function encryptJSON(value, key) {
+      const iv = randBytes(12);
+      const plain = enc.encode(JSON.stringify(value));
+      const cipher = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, plain);
+      return { iv: b64(iv), data: b64(new Uint8Array(cipher)) };
+    }
+
+    async function decryptJSON(blob, key) {
+      const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: unb64(blob.iv) }, key, unb64(blob.data));
+      return JSON.parse(dec.decode(plain));
+    }
+
+    function blankVault() {
+      return { version: 1, createdAt: nowIso(), updatedAt: nowIso(), salt: b64(randBytes(16)), iterations: 310000, data: null, name: 'securra.sec' };
+    }
+
+    async function buildVault(password) {
+      const vault = blankVault();
+      const key = await deriveKey(password, vault.salt, vault.iterations);
+      vault.data = await encryptJSON({ entries: [] }, key);
+      return { vault, key };
+    }
+
+    async function unlockVault(vault, password) {
+      const key = await deriveKey(password, vault.salt, vault.iterations);
+      const plain = await decryptJSON(vault.data, key);
+      if (!plain || !Array.isArray(plain.entries)) throw new Error('bad vault');
+      return { key, entries: plain.entries };
+    }
+
+    async function reencryptVault() {
+      if (!currentVault || !currentKey) return;
+      currentVault.updatedAt = nowIso();
+      currentVault.data = await encryptJSON({ entries: currentVault.entries }, currentKey);
+    }
+
+    function safeVaultForFile(vault) {
+      if (!vault) return null;
+      const { entries, ...safe } = vault;
+      return safe;
+    }
+
+    // ===================== ИЗМЕНЁННАЯ ФУНКЦИЯ =====================
+    // Возвращает true при успешном сохранении, false при ошибке или отмене
+    async function saveCurrentVault() {
+      if (!currentVault || !currentKey) return false;
+      await reencryptVault();
+      const content = JSON.stringify(safeVaultForFile(currentVault), null, 2);
+
+      if (currentFileHandle && typeof currentFileHandle.createWritable === 'function') {
+        try {
+          const writable = await currentFileHandle.createWritable();
+          await writable.write(content);
+          await writable.close();
+          showNotice(els.authNotice, 'Изменения сохранены в текущий файл.', 'ok');
+          setTimeout(() => hideNotice(els.authNotice), 1400);
+          return true;
+        } catch (err) {
+          showNotice(els.authNotice, 'Не удалось сохранить в текущий файл.', 'error');
+          return false;
+        }
+      }
+
+      if (window.showSaveFilePicker) {
+        try {
+          const handle = await window.showSaveFilePicker({
+            suggestedName: currentFileName || 'vault.vault',
+            types: [{ description: 'Vault file', accept: { 'application/json': ['.sec', '.json'] } }]
+          });
+          const writable = await handle.createWritable();
+          await writable.write(content);
+          await writable.close();
+          currentFileHandle = handle;
+          currentFileName = handle.name || currentFileName;
+          showNotice(els.authNotice, 'Файл сохранён.', 'ok');
+          setTimeout(() => hideNotice(els.authNotice), 1400);
+          return true;
+        } catch (err) {
+          if (err && err.name === 'AbortError') return false;
+          showNotice(els.authNotice, 'Не удалось открыть диалог сохранения.', 'error');
+          return false;
+        }
+      }
+
+      showNotice(els.authNotice, 'Этот браузер не позволяет записать в текущий файл. Используйте «Сохранить как».', 'error');
+      return false;
+    }
+
+    // ===================== НОВАЯ ФУНКЦИЯ =====================
+    async function saveAsVault() {
+      if (!currentVault || !currentKey) return;
+      await reencryptVault();
+      const defaultName = currentFileName ? currentFileName.replace(/(\.sec|\.json)?$/i, '') + '-copy.sec' : 'securra-copy.sec';
+      const content = JSON.stringify(safeVaultForFile(currentVault), null, 2);
+
+      if (window.showSaveFilePicker) {
+        try {
+          const handle = await window.showSaveFilePicker({
+            suggestedName: defaultName,
+            types: [{ description: 'Vault file', accept: { 'application/json': ['.sec', '.json'] } }]
+          });
+          const writable = await handle.createWritable();
+          await writable.write(content);
+          await writable.close();
+          currentFileHandle = handle;
+          currentFileName = handle.name || defaultName;
+          showNotice(els.authNotice, 'Копия файла сохранена.', 'ok');
+          setTimeout(() => hideNotice(els.authNotice), 1400);
+          return;
+        } catch (err) {
+          if (err && err.name === 'AbortError') return;
+          showNotice(els.authNotice, 'Не удалось открыть диалог сохранения.', 'error');
+          return;
+        }
+      }
+
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([content], { type: 'application/json' }));
+      a.download = defaultName;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    }
+
+    // ===================== ИЗМЕНЁННАЯ ФУНКЦИЯ =====================
+    async function changeMaster() {
+      hideNotice(els.changeNotice);
+      const oldPass = els.oldMaster.value;
+      const newPass1 = els.newMaster1.value;
+      const newPass2 = els.newMaster2.value;
+      if (!oldPass || !newPass1) return showNotice(els.changeNotice, 'Заполните все поля.', 'error');
+      if (newPass1.length < 6) return showNotice(els.changeNotice, 'Новый пароль должен быть не короче 6 символов.', 'error');
+      if (newPass1 !== newPass2) return showNotice(els.changeNotice, 'Новые пароли не совпадают.', 'error');
+
+      try { await unlockVault(currentVault, oldPass); } catch { return showNotice(els.changeNotice, 'Текущий пароль неверный.', 'error'); }
+
+      const oldSalt = currentVault.salt;
+      const oldKey = currentKey;
+
+      const newSalt = b64(randBytes(16));
+      const newKey = await deriveKey(newPass1, newSalt, currentVault.iterations);
+
+      currentVault.salt = newSalt;
+      currentKey = newKey;
+      await reencryptVault();
+
+      const saved = await saveCurrentVault();
+      if (!saved) {
+        currentVault.salt = oldSalt;
+        currentKey = oldKey;
+        await reencryptVault();
+        showNotice(els.changeNotice, 'Не удалось сохранить файл. Пароль не изменён.', 'error');
+        return;
+      }
+
+      closeChangeModal();
+    }
+
+    // ===================== ОСТАЛЬНЫЕ ФУНКЦИИ (БЕЗ ИЗМЕНЕНИЙ) =====================
+    function switchTab(next) {
+      els.tabNew.classList.toggle('active', next === 'new');
+      els.tabOpen.classList.toggle('active', next === 'open');
+      els.newBox.classList.toggle('hidden', next !== 'new');
+      els.openBox.classList.toggle('hidden', next !== 'open');
+      hideNotice(els.authNotice);
+    }
+
+    function showApp() {
+      els.authScreen.classList.add('hidden');
+      els.appScreen.classList.remove('hidden');
+      els.statusTag.textContent = 'Открыто локально на вашем компьютере';
+      els.fileNamePill.textContent = currentFileName || 'securra.sec';
+      render();
+    }
+
+    function showAuth() {
+      currentVault = null;
+      currentKey = null;
+      selectedId = null;
+      editingId = null;
+      currentFileHandle = null;
+      selectedFile = null;
+      currentFileName = 'securra.sec';
+      els.search.value = '';
+      els.master1.value = '';
+      els.master2.value = '';
+      els.openPassword.value = '';
+      els.vaultFile.value = '';
+      els.pickedFileName.textContent = 'Файл не выбран';
+      els.authScreen.classList.remove('hidden');
+      els.appScreen.classList.add('hidden');
+      render();
+    }
+
+    function filteredEntries() {
+      const q = els.search.value.trim().toLowerCase();
+      let entries = [...(currentVault?.entries || [])];
+      if (q) entries = entries.filter(e => [e.name, e.email, e.phone, e.comment].join(' ').toLowerCase().includes(q));
+      if (els.sort.value === 'recent') entries.sort((a, b) => new Date(b.updatedAt || b.createdAt) - new Date(a.updatedAt || a.createdAt));
+      else entries.sort((a, b) => a.name.localeCompare(b.name, 'ru'));
+      return entries;
+    }
+
+    function renderTable() {
+      const rows = filteredEntries();
+      els.tableBody.innerHTML = '';
+      els.countTag.textContent = `${rows.length} запис${rows.length === 1 ? 'ь' : rows.length < 5 ? 'и' : 'ей'}`;
+      els.emptyState.classList.toggle('hidden', rows.length !== 0);
+
+      for (const e of rows) {
+        const tr = document.createElement('tr');
+        tr.className = e.id === selectedId ? 'active' : '';
+        tr.innerHTML = `
+          <td><strong>${escapeHtml(e.name)}</strong><div class="muted">${fmtDate(e.updatedAt || e.createdAt)}</div></td>
+          <td><span class="truncate">${escapeHtml(e.email || '—')}</span></td>
+          <td><span class="truncate">${escapeHtml(e.phone || '—')}</span></td>
+          <td><span class="truncate" title="${escapeHtml(e.comment || '')}">${escapeHtml(e.comment || '—')}</span></td>
+          <td>
+            <div class="actions" style="justify-content:flex-start; gap:8px; flex-wrap:nowrap;">
+              <button class="icon-btn edit" data-act="edit" title="Редактировать">✎</button>
+              <button class="icon-btn delete" data-act="delete" title="Удалить">🗑</button>
+            </div>
+          </td>
+        `;
+        tr.addEventListener('click', (ev) => {
+          const act = ev.target?.dataset?.act;
+          if (act === 'edit') return openEntryModal('edit', e.id);
+          if (act === 'delete') {
+            selectedId = e.id;
+            render();
+            return removeEntry();
+          }
+          selectedId = e.id;
+          render();
+        });
+        els.tableBody.appendChild(tr);
+      }
+    }
+
+    function makeField(labelText, value, copyKey, options = {}) {
+      const { scroll = false, code = false } = options;
+      const display = scroll
+        ? `<div class="value scroll-box">${escapeHtml(value || '—')}</div>`
+        : code
+          ? `<code class="value">${escapeHtml(value || '—')}</code>`
+          : `<div class="value">${escapeHtml(value || '—')}</div>`;
+      return `
+        <div class="kv">
+          <label>${escapeHtml(labelText)}</label>
+          <div class="line">
+            ${display}
+            <button class="icon-btn copy" data-copy="${copyKey}" data-icon="⧉" title="Копировать">⧉</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderDetail() {
+      const e = currentVault?.entries.find(x => x.id === selectedId) || null;
+      els.editBtn.disabled = !e;
+      els.deleteBtn.disabled = !e;
+
+      if (!e) {
+        els.detailTitle.textContent = 'Выберите запись';
+        els.detailMeta.innerHTML = 'Здесь появится данные после выбора какой-либо строки строки.';
+        els.detailBody.innerHTML = `<div class="kv"><label>Подсказка</label><div class="line"><span>Откройте любую строку в таблице.</span></div></div>`;
+        return;
+      }
+
+      els.detailTitle.textContent = e.name;
+      els.detailMeta.innerHTML = `Создано: ${fmtDate(e.createdAt)}<br>Изменено: ${fmtDate(e.updatedAt || e.createdAt)}`;
+      const mask = '•'.repeat(Math.max(8, Math.min(24, (e.password || '').length || 8)));
+      let showPass = false;
+
+      els.detailBody.innerHTML = `
+        ${makeField('Название', e.name, 'name', { code: true })}
+        ${makeField('Почта', e.email || '—', 'email', { code: true })}
+        ${makeField('Телефон', e.phone || '—', 'phone', { code: true })}
+        <div class="kv">
+          <label>Пароль</label>
+          <div class="line">
+            <code id="passText" class="value">${escapeHtml(mask)}</code>
+            <button class="icon-btn toggle" data-action="toggle-pass" title="Показать/скрыть">👁</button>
+            <button class="icon-btn copy" data-copy="password" data-icon="⧉" title="Копировать">⧉</button>
+          </div>
+        </div>
+        ${makeField('Комментарий', e.comment || '—', 'comment', { scroll: true })}
+      `;
+
+      const passText = $("passText");
+      els.detailBody.querySelector('[data-action="toggle-pass"]').addEventListener('click', () => {
+        showPass = !showPass;
+        passText.textContent = showPass ? e.password : mask;
+      });
+
+      const passCopyBtn = els.detailBody.querySelector('[data-copy="password"]');
+      passCopyBtn.addEventListener('click', async (ev) => {
+        ev.stopPropagation();
+        const ok = await copyText(e.password || '');
+        flashButton(ev.currentTarget, ok);
+      });
+
+      els.detailBody.querySelectorAll('[data-copy]:not([data-copy="password"])').forEach(btn => {
+        btn.addEventListener('click', async (ev) => {
+          ev.stopPropagation();
+          const target = btn.dataset.copy;
+          const value = target === 'name' ? e.name : target === 'email' ? (e.email || '') : target === 'phone' ? (e.phone || '') : (e.comment || '');
+          const ok = await copyText(value);
+          flashButton(btn, ok);
+        });
+      });
+    }
+
+    function render() {
+      renderTable();
+      renderDetail();
+    }
+
+    function openEntryModal(kind, id = null) {
+      editingId = id;
+      const entry = id ? currentVault.entries.find(x => x.id === id) : null;
+      els.entryModalTitle.textContent = kind === 'edit' ? 'Редактировать запись' : 'Добавить запись';
+      els.entryName.value = entry?.name || '';
+      els.entryEmail.value = entry?.email || '';
+      els.entryPhone.value = entry?.phone || '';
+      els.entryPassword.value = entry?.password || '';
+      els.entryComment.value = entry?.comment || '';
+      hideNotice(els.entryNotice);
+      els.entryModalBg.style.display = 'flex';
+      setTimeout(() => els.entryName.focus(), 0);
+    }
+
+    function closeEntryModal() { els.entryModalBg.style.display = 'none'; editingId = null; }
+
+    function openChangeModal() {
+      els.oldMaster.value = '';
+      els.newMaster1.value = '';
+      els.newMaster2.value = '';
+      hideNotice(els.changeNotice);
+      els.changeModalBg.style.display = 'flex';
+      setTimeout(() => els.oldMaster.focus(), 0);
+    }
+
+    function closeChangeModal() { els.changeModalBg.style.display = 'none'; }
+
+    async function saveEntry() {
+      const name = els.entryName.value.trim();
+      const email = els.entryEmail.value.trim();
+      const phone = els.entryPhone.value.trim();
+      const password = els.entryPassword.value;
+      const comment = els.entryComment.value.trim();
+      if (!name || !password) return showNotice(els.entryNotice, 'Нужно заполнить название ресурса и пароль.', 'error');
+
+      if (editingId) {
+        const idx = currentVault.entries.findIndex(x => x.id === editingId);
+        if (idx >= 0) currentVault.entries[idx] = { ...currentVault.entries[idx], name, email, phone, password, comment, updatedAt: nowIso() };
+        selectedId = editingId;
+      } else {
+        const entry = { id: uuid(), name, email, phone, password, comment, createdAt: nowIso(), updatedAt: nowIso() };
+        currentVault.entries.unshift(entry);
+        selectedId = entry.id;
+      }
+
+      await reencryptVault();
+      closeEntryModal();
+      render();
+    }
+
+    async function removeEntry() {
+      const e = currentVault?.entries.find(x => x.id === selectedId);
+      if (!e) return;
+      if (!confirm(`Удалить «${e.name}»?`)) return;
+      currentVault.entries = currentVault.entries.filter(x => x.id !== selectedId);
+      selectedId = null;
+      await reencryptVault();
+      render();
+    }
+
+    async function createNewVault() {
+      hideNotice(els.authNotice);
+      const p1 = els.master1.value;
+      const p2 = els.master2.value;
+      if (!p1 || p1.length < 6) return showNotice(els.authNotice, 'Пароль должен быть не короче 6 символов.', 'error');
+      if (p1 !== p2) return showNotice(els.authNotice, 'Пароли не совпадают.', 'error');
+      const result = await buildVault(p1);
+      currentVault = { ...result.vault, entries: [] };
+      currentKey = result.key;
+      currentFileName = 'securra.sec';
+      currentFileHandle = null;
+      selectedFile = null;
+      selectedId = null;
+      showApp();
+      render();
+    }
+
+    async function pickFile() {
+      hideNotice(els.authNotice);
+      try {
+        if (window.showOpenFilePicker) {
+          const [handle] = await window.showOpenFilePicker({
+            multiple: false,
+            types: [{ description: 'Vault file', accept: { 'application/json': ['.sec', '.json'] } }]
+          });
+          selectedFile = await handle.getFile();
+          currentFileHandle = handle;
+          els.pickedFileName.textContent = selectedFile.name || 'Файл выбран';
+          return;
+        }
+      } catch (_) {
+        return;
+      }
+
+      els.vaultFile.click();
+    }
+
+    els.vaultFile.addEventListener('change', () => {
+      selectedFile = els.vaultFile.files?.[0] || null;
+      currentFileHandle = null;
+      if (selectedFile) els.pickedFileName.textContent = selectedFile.name;
+    });
+
+    async function openExistingVault() {
+      hideNotice(els.authNotice);
+      const password = els.openPassword.value;
+      if (!password) return showNotice(els.authNotice, 'Введите мастер-пароль.', 'error');
+      if (!selectedFile) return showNotice(els.authNotice, 'Сначала выберите файл.', 'error');
+
+      try {
+        const text = await selectedFile.text();
+        const vault = JSON.parse(text);
+        if (!vault || !vault.data || !vault.salt || !vault.iterations) throw new Error('invalid');
+        const opened = await unlockVault(vault, password);
+        currentVault = { ...vault, entries: opened.entries };
+        currentKey = opened.key;
+        currentFileName = selectedFile.name || 'securra.sec';
+        selectedId = currentVault.entries[0]?.id || null;
+        showApp();
+        render();
+      } catch {
+        showNotice(els.authNotice, 'Не удалось открыть файл. Проверьте файл и мастер-пароль.', 'error');
+      }
+    }
+
+    // Назначение обработчиков
+    els.tabNew.onclick = () => switchTab('new');
+    els.tabOpen.onclick = () => switchTab('open');
+    els.createBtn.onclick = createNewVault;
+    els.pickFileBtn.onclick = pickFile;
+    els.openBtn.onclick = openExistingVault;
+    els.addBtn.onclick = () => openEntryModal('add');
+    els.saveBtn.onclick = saveCurrentVault;
+    els.saveAsBtn.onclick = saveAsVault;
+    els.changeBtn.onclick = openChangeModal;
+    els.lockBtn.onclick = showAuth;
+    els.editBtn.onclick = () => selectedId && openEntryModal('edit', selectedId);
+    els.deleteBtn.onclick = removeEntry;
+    els.closeEntryModal.onclick = closeEntryModal;
+    els.saveEntryBtn.onclick = saveEntry;
+    els.closeChangeModal.onclick = closeChangeModal;
+    els.saveChangeBtn.onclick = changeMaster;
+    els.search.oninput = render;
+    els.sort.onchange = render;
+    els.entryModalBg.onclick = (e) => { if (e.target === els.entryModalBg) closeEntryModal(); };
+    els.changeModalBg.onclick = (e) => { if (e.target === els.changeModalBg) closeChangeModal(); };
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        if (els.entryModalBg.style.display === 'flex') closeEntryModal();
+        if (els.changeModalBg.style.display === 'flex') closeChangeModal();
+      }
+    });
+
+    render();
+  </script>
+</body>
+</html>
