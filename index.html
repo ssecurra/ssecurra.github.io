@@ -1242,6 +1242,12 @@
             }
         }
 
+        /* Убираем звёздочки у подписей в настройках генератора */
+        .generator-settings .setting-row label::after,
+        .generator-settings .setting-options label::after {
+            content: none;
+        }
+
         /* Отключаем подсветку автозаполнения */
         input:-webkit-autofill,
         input:-webkit-autofill:hover,
@@ -2230,10 +2236,7 @@
         }
 
         function toggleSettings() {
-            const settings = els.generatorSettings;
-            const btn = els.settingsToggle;
-            settings.classList.toggle('hidden');
-            btn.style.transform = settings.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(60deg)';
+            els.generatorSettings.classList.toggle('hidden');
         }
 
         function syncGeneratorState() {
