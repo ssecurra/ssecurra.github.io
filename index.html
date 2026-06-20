@@ -112,7 +112,6 @@
             padding: 28px;
         }
 
-        /* Единый класс для кнопок действий на экране авторизации */
         .auth-action-btn {
             display: block;
             width: 160px;
@@ -176,10 +175,7 @@
             width: 100%;
             height: 100%;
         }
-        h1,
-        h2,
-        h3,
-        p {
+        h1, h2, h3, p {
             margin: 0;
         }
         h1 {
@@ -198,6 +194,7 @@
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
+            align-items: center;
         }
         .tabs {
             display: flex;
@@ -223,6 +220,10 @@
         }
         .tab:hover {
             transform: translateY(-1px);
+            background: #1e293b;
+        }
+        .tab.active:hover {
+            background: #5b5cf6;
         }
         .tab:active {
             transform: translateY(1px) scale(.98);
@@ -247,6 +248,22 @@
             border-radius: 12px;
             padding: 12px 13px;
             outline: none;
+        }
+        /* Уточнение только для выпадающего списка */
+        .select {
+            padding: 12px 30px 12px 13px;        /* место для кастомной стрелки */
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;                     /* скрываем стандартную стрелку */
+            overflow: hidden;
+            text-overflow: ellipsis;              /* обрезка текста многоточием */
+            white-space: nowrap;
+
+            /* кастомная SVG-стрелка (шеврон) */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2394a3b8' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 12px;
         }
         .textarea {
             min-height: 110px;
@@ -274,6 +291,18 @@
             color: var(--danger);
         }
 
+        /* Выделение обязательных полей */
+        .field.required label::after {
+            content: " *";
+            color: var(--accent);
+        }
+
+        .field.required .input,
+        .field.required .textarea {
+            border-left: 3px solid var(--accent);
+            padding-left: 11px; /* компенсация утолщённой границы */
+        }
+
         .btn,
         .small-btn,
         .icon-btn {
@@ -282,18 +311,23 @@
             color: var(--text);
             border-radius: 12px;
             cursor: pointer;
-            transition: transform .08s ease, border-color .15s ease, background .15s ease, color .15s ease, opacity .15s ease;
+            transition: transform .08s ease, border-color .15s ease, background .15s ease, color .15s ease, opacity .15s ease, box-shadow .15s ease, filter .15s ease;
             white-space: nowrap;
         }
         .btn:hover,
         .small-btn:hover,
         .icon-btn:hover {
-            transform: translateY(-1px);
+            transform: translateY(-2px);
+            background: #1e293b;
+            border-color: rgba(148, 163, 184, 0.3);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
         }
         .btn:active,
         .small-btn:active,
         .icon-btn:active {
             transform: translateY(1px) scale(.98);
+            background: #0f172a;
+            box-shadow: none;
         }
         .btn {
             padding: 11px 14px;
@@ -301,18 +335,45 @@
         .btn.primary {
             background: linear-gradient(135deg, var(--accent), var(--accent-2));
             border-color: transparent;
+            color: #fff;
+        }
+        .btn.primary:hover {
+            background: linear-gradient(135deg, #5b5cf6, #4644e0);
+            filter: brightness(1.08);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+            border-color: transparent;
+        }
+        .btn.primary:active {
+            filter: brightness(0.95);
         }
         .btn.success {
             background: linear-gradient(135deg, var(--success), var(--success-2));
+            border-color: transparent;
+            color: #fff;
+        }
+        .btn.success:hover {
+            background: linear-gradient(135deg, #1fae4b, #118b3a);
+            filter: brightness(1.08);
+            box-shadow: 0 8px 20px rgba(34, 197, 94, 0.3);
             border-color: transparent;
         }
         .btn.soft {
             background: #111827;
         }
+        .btn.soft:hover {
+            background: #1f2937;
+            border-color: rgba(148, 163, 184, 0.35);
+        }
         .btn.danger {
-            background: rgba(239, 68, 68, .1);
-            border-color: rgba(239, 68, 68, .3);
-            color: #fecaca;
+            background: #6d28d9;          /* насыщенный фиолетовый */
+            border-color: #6d28d9;
+            color: #ffffff;
+        }
+        .btn.danger:hover {
+            background: #5b21b6;          /* темнее при наведении */
+            border-color: #5b21b6;
+            filter: brightness(1.05);
+            box-shadow: 0 8px 18px rgba(109, 40, 217, 0.3);
         }
         .small-btn {
             padding: 8px 10px;
@@ -644,6 +705,36 @@
             padding-left: 38px;
         }
 
+        /* Кнопка очистки поиска */
+        .search-clear {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            color: var(--muted);
+            font-size: 18px;
+            cursor: pointer;
+            padding: 0;
+            width: 28px;
+            height: 28px;
+            display: none;          /* по умолчанию скрыта */
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background 0.15s, color 0.15s;
+        }
+
+        .search-clear.visible {
+            display: flex;          /* показываем, когда есть текст */
+        }
+
+        .search-clear:hover {
+            background: rgba(148, 163, 184, 0.2);
+            color: var(--text);
+        }
+
         .table-wrap {
             border: 1px solid var(--border);
             background: #0b1324;
@@ -795,7 +886,6 @@
             opacity: 1;
         }
 
-        /* Кастомный выпадающий список для тегов */
         .tag-suggestions {
             position: absolute;
             top: 100%;
@@ -962,7 +1052,6 @@
             line-height: 1.5;
         }
 
-        /* Поле выбора файла */
         .pick-field {
             border: 1px solid var(--border);
             background: #0b1324;
@@ -1006,37 +1095,46 @@
             transform: none;
         }
 
-        /* Кастомный чекбокс подтверждения – высотой на две строки текста */
         .custom-checkbox {
             -webkit-appearance: none;
             appearance: none;
-            width: 30px;
-            height: 30px;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            background: #0b1324;
+            width: 25px;
+            height: 25px;
+            border: 2px solid #334155;
+            border-radius: 4px;
+            background: #1e293b;
+            box-shadow: inset 0 1px 4px rgba(0,0,0,0.3);
             cursor: pointer;
             margin: 0;
             flex-shrink: 0;
             display: grid;
             place-items: center;
-            vertical-align: middle;       /* ← убирает смещение относительно текста */
-            align-self: center;           /* ← надёжное центрирование во flex */
-            transition: background 0.15s, border-color 0.15s;
+            vertical-align: middle;
+            align-self: center;
+            transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
             transform: translateY(-2px);
         }
 
         .custom-checkbox:checked {
             background: var(--accent);
             border-color: var(--accent);
+            box-shadow: none;
         }
 
         .custom-checkbox:checked::after {
             content: "✓";
             color: white;
-            font-size: 15px;
-            font-weight: Regular;
+            font-size: 12px;
+            font-weight: bold;
             line-height: 1;
+        }
+
+        /* НОВОЕ ПРАВИЛО ДЛЯ ЦЕНТРИРОВАНИЯ КНОПКИ */
+        .header-center {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         @media (max-width: 1200px) {
@@ -1140,6 +1238,23 @@
                 min-width: 70px;
             }
         }
+
+        /* Отключаем подсветку автозаполнения */
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus,
+        textarea:-webkit-autofill,
+        textarea:-webkit-autofill:hover,
+        textarea:-webkit-autofill:focus,
+        select:-webkit-autofill,
+        select:-webkit-autofill:hover,
+        select:-webkit-autofill:focus {
+            -webkit-box-shadow: 0 0 0 1000px #0b1324 inset !important;
+            -webkit-text-fill-color: #e5e7eb !important;
+            border-color: var(--border) !important;
+            transition: background-color 5000s ease-in-out 0s;
+            caret-color: #e5e7eb;
+        }
     </style>
 </head>
 <body>
@@ -1177,15 +1292,15 @@
                         <strong style="font-size: 0.92rem; display: block; margin-bottom: 4px;">⚠️ Внимание!</strong>
                         Пароль нигде не сохраняется, и восстановить его невозможно.<br>
                         Если вы его забудете, доступ к данным будет потерян навсегда!<br>
-                        Перед началом работы обязательно прочтите <a href="guide.html" style="color: #c9a54d; text-decoration: underline;">руководство</a>.
+                        Перед началом работы обязательно прочтите <a href="guide.html" style="color: #c9a54d; text-decoration: underline;"><b>руководство</b></a>.
                     </p>
                 </div>
 
-                <!-- Чекбокс подтверждения (выровнен по центру двух строк, большой квадрат 44×44) -->
+                <!-- Чекбокс подтверждения -->
                 <div style="margin: 16px 0 8px; display: flex; align-items: center; gap: 10px;">
                     <input type="checkbox" id="understandCheckbox" class="custom-checkbox">
-                    <label for="understandCheckbox" style="font-size: 0.80rem; color: var(--text); line-height: 1.4; cursor: pointer; user-select: none;">
-                        Я осознаю, что пароль — единственный способ доступа к данным, и сохранил его в надёжном месте.
+                    <label for="understandCheckbox" style="font-size: 0.7rem; color: var(--text); line-height: 1.4; cursor: pointer; user-select: none;">
+                        Я осознаю, что пароль — единственный способ доступа к данным.<br>Я записал его и сохраню в надёжном месте.
                     </label>
                 </div>
 
@@ -1229,11 +1344,14 @@
                         <p class="subtle">Надежно зашифрованное хранилище паролей</p>
                     </div>
                 </div>
+                <!-- НОВЫЙ ЦЕНТРАЛЬНЫЙ БЛОК -->
+                <div class="header-center">
+                    <a href="guide.html" target="_blank" rel="noopener noreferrer" class="btn" style="background: rgba(99,102,241,0.25); border-color: rgba(99,102,241,0.5); color: #c7d2fe; display: inline-flex; align-items: center; gap: 6px; text-decoration: none;">📖 Руководство</a>
+                </div>
                 <div class="actions">
                     <span class="pill" id="statusTag">Открыто локально</span>
                     <span class="pill" id="fileNamePill">vault.vault</span>
                     <span class="pill" id="timerPill" title="Мы заботимся о сохранности ваших данных. Хранилище автоматически заблокируется через 5 минут бездействия.">⌛ 5:00</span>
-<a href="guide.html" target="_blank" rel="noopener noreferrer" class="pill" style="background: rgba(99,102,241,0.15); border-color: rgba(99,102,241,0.3);">📖 Руководство</a>
                 </div>
             </div>
         </div>
@@ -1251,16 +1369,17 @@
                             <div class="search-wrap">
                                 <span class="search-icon">🔎</span>
                                 <input id="search" class="input" placeholder="Поиск">
+                                <button id="searchClearBtn" class="search-clear" type="button" title="Очистить поиск">✕</button>
                             </div>
                             <select id="sort" class="select">
                                 <option value="name">Сортировка: по названию</option>
-                                <option value="recent">Сортировка: по изменению</option>
+                                <option value="recent">Сортировка: по дате изменения</option>
                             </select>
                             <button id="addBtn" class="btn primary">+ Добавить</button>
                             <button id="saveBtn" class="btn success">Сохранить изменения</button>
                             <button id="saveAsBtn" class="btn soft">Сохранить как</button>
                             <button id="changeBtn" class="btn soft">Сменить пароль</button>
-                            <button id="lockBtn" class="btn danger">Закрыть</button>
+                            <button id="lockBtn" class="btn danger">Выход из хранилища</button>
                         </div>
 
                         <div class="table-wrap">
@@ -1309,8 +1428,8 @@
             </header>
             <main>
                 <div class="grid-2">
-                    <div class="field" id="fieldName">
-                        <label for="entryName">Название ресурса *</label>
+                    <div class="field required" id="fieldName">
+                        <label for="entryName">Название ресурса</label>
                         <input id="entryName" class="input" placeholder="Gmail, GitHub, Telegram..." maxlength="200">
                         <div class="char-counter"><span id="nameCounter">0 / 100</span></div>
                     </div>
@@ -1324,8 +1443,8 @@
                         <input id="entryPhone" class="input" placeholder="+7 912 345-67-89" inputmode="tel">
                     </div>
 
-                    <div class="field full-width">
-                        <label for="entryPassword">Пароль *</label>
+                    <div class="field full-width required">
+                        <label for="entryPassword">Пароль</label>
                         <div class="password-input-group">
                             <input id="entryPassword" class="input" type="password" placeholder="Пароль ресурса" autocomplete="new-password">
                             <button id="genPassBtn" class="icon-btn gen" title="Сгенерировать пароль">🎲</button>
@@ -1649,6 +1768,7 @@
             fileNamePill: $("fileNamePill"),
             timerPill: $("timerPill"),
             search: $("search"),
+            searchClearBtn: $("searchClearBtn"),
             sort: $("sort"),
             addBtn: $("addBtn"),
             saveBtn: $("saveBtn"),
@@ -2805,8 +2925,72 @@
         els.saveEntryBtn.onclick = saveEntry;
         els.closeChangeModal.onclick = closeChangeModal;
         els.saveChangeBtn.onclick = changeMaster;
-        els.search.oninput = render;
         els.sort.onchange = render;
+
+        // === Авто-title для поля сортировки ===
+        function updateSortTitle() {
+            const select = els.sort;
+            const option = select.options[select.selectedIndex];
+            if (option) {
+                select.title = option.text; // всплывающая подсказка с полным названием
+            }
+        }
+        // Вешаем обновление title при смене пункта
+        els.sort.addEventListener('change', updateSortTitle);
+
+        // === Обработка Enter на экране авторизации ===
+        function tryCreateVault() {
+            if (!els.understandCheckbox.checked) {
+                showNotice(els.globalNotice, 'Пожалуйста, подтвердите, что вы понимаете ответственность за пароль.', 'error', 4000);
+                els.understandCheckbox.focus();
+                return;
+            }
+            createNewVault();
+        }
+
+        els.master1.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') { e.preventDefault(); tryCreateVault(); }
+        });
+        els.master2.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') { e.preventDefault(); tryCreateVault(); }
+        });
+
+        els.openPassword.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                openExistingVault();
+            }
+        });
+
+        // Вызываем при каждой отрисовке (render)
+        const originalRender = render;
+        render = function() {
+            originalRender();
+            updateSortTitle(); // чтобы title обновлялся, если сортировка менялась программно
+        };
+        // Первичная установка
+        updateSortTitle();
+
+        // Search with clear button
+        els.search.addEventListener('input', () => {
+            toggleSearchClearBtn();
+            render();
+        });
+
+        els.searchClearBtn.addEventListener('click', () => {
+            els.search.value = '';
+            toggleSearchClearBtn();
+            render();
+            els.search.focus();
+        });
+
+        function toggleSearchClearBtn() {
+            if (els.search.value.trim().length > 0) {
+                els.searchClearBtn.classList.add('visible');
+            } else {
+                els.searchClearBtn.classList.remove('visible');
+            }
+        }
 
         els.genPassBtn.onclick = applyGeneratedPassword;
         els.togglePassBtn.onclick = togglePasswordVisibility;
@@ -2960,6 +3144,7 @@
         document.addEventListener('wheel', onUserActivity);
 
         render();
+        toggleSearchClearBtn();
     </script>
 </body>
 </html>
