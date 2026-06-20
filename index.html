@@ -295,8 +295,9 @@
         .field.required label::after {
             content: " *";
             color: var(--accent);
-            font-size: 1.4em;            /* ← добавьте эту строку */
-            vertical-align: middle;      /* по желанию для выравнивания */
+            font-size: 1.4em;
+            vertical-align: middle;    /* остаётся по вашему желанию */
+            line-height: 0;            /* убирает влияние на высоту строки */
         }
 
         .field.required .input,
@@ -2129,23 +2130,33 @@
             const lower = 'abcdefghijklmnopqrstuvwxyz';
             let chars = lower;
             let required = [];
-
             if (opts.uppercase) { chars += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'; required.push('ABCDEFGHIJKLMNOPQRSTUVWXYZ'); }
             if (opts.digits) { chars += '0123456789'; required.push('0123456789'); }
             if (opts.special) { chars += '!@#$%^&*()_+-=[]{}|;:,.<>?'; required.push('!@#$%^&*()_+-=[]{}|;:,.<>?'); }
-
             if (chars.length === 0) return '';
 
+            const getRandomChar = () => {
+                const array = new Uint32Array(1);
+                crypto.getRandomValues(array);
+                return chars[array[0] % chars.length];
+            };
+
             let password = '';
+            // гарантированно включаем по одному символу из каждой нужной группы
             for (const group of required) {
-                password += group.charAt(Math.floor(Math.random() * group.length));
+                const arr = new Uint32Array(1);
+                crypto.getRandomValues(arr);
+                password += group[arr[0] % group.length];
             }
-            for (let i = password.length; i < length; i++) {
-                password += chars.charAt(Math.floor(Math.random() * chars.length));
+            while (password.length < length) {
+                password += getRandomChar();
             }
+            // перемешивание
             const arr = password.split('');
             for (let i = arr.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
+                const randArray = new Uint32Array(1);
+                crypto.getRandomValues(randArray);
+                const j = randArray[0] % (i + 1);
                 [arr[i], arr[j]] = [arr[j], arr[i]];
             }
             return arr.join('');
@@ -2268,6 +2279,16 @@
         }
 
         function showAuth() {
+            // Закрываем все модальные окна, если они открыты
+            els.entryModalBg.style.display = 'none';
+            els.changeModalBg.style.display = 'none';
+            els.confirmModalBg.style.display = 'none';
+
+            // Сбрасываем состояние редактирования, чтобы не осталось мусора
+            editingId = null;
+            originalEntry = null;
+            tempTags = [];
+
             clearInactivityTimer();
             currentVault = null;
             currentKey = null;
