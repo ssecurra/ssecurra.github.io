@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Securra — Руководство</title>
+    <link rel="icon" type="image/png" href="ico.png" />
+    <style>
+        /* ========== СТИЛИ ДЛЯ РУКОВОДСТВА ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: radial-gradient(circle at 20% 0%, #0f172a 0%, #080c1a 60%, #04070f 100%);
+            color: #e5e7eb;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        a {
+            color: #818cf8;
+            text-decoration: none;
+        }
+        a:hover {
+            color: #a5b4fc;
+            text-decoration: underline;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px 16px 60px;
+        }
+
+        /* ----- Шапка (sticky) – теперь лёгкая и современная ----- */
+        .guide-header {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px 16px;
+            margin-left: -16px;   /* компенсируем padding контейнера */
+            margin-right: -16px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+            /* Мягкий градиент, перекликающийся с фоном страницы */
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0.8) 0%, rgba(15, 23, 42, 0.55) 100%);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            /* Лёгкая тень вместо тяжёлой чёрной */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        .guide-header .brand-small {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: #e5e7eb;
+        }
+        .guide-header .brand-small img {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+        }
+        .btn-back {
+            border: 1px solid rgba(148, 163, 184, 0.20);
+            background: rgba(17, 24, 39, 0.80);
+            color: #e5e7eb;
+            border-radius: 10px;
+            padding: 8px 18px;
+            cursor: pointer;
+            font: inherit;
+            transition: background 0.2s;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 0.95rem;
+        }
+        .btn-back:hover {
+            background: rgba(99, 102, 241, 0.20);
+        }
+
+        /* ----- Hero ----- */
+        .hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 20px 0 32px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.10);
+        }
+
+        .logo-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 12px;
+        }
+
+        .logo-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            display: grid;
+            place-items: center;
+            font-weight: 800;
+            font-size: 32px;
+            color: #fff;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+        .logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .hero h1 {
+            font-size: clamp(2rem, 5vw, 3.2rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #e5e7eb 30%, #a5b4fc 90%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero .tagline {
+            font-size: 1.2rem;
+            color: #94a3b8;
+            max-width: 640px;
+            margin: 6px auto 0;
+        }
+
+        .badge-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px 20px;
+            margin-top: 18px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 999px;
+            background: rgba(99, 102, 241, 0.12);
+            border: 1px solid rgba(99, 102, 241, 0.20);
+            color: #c7d2fe;
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 0.01em;
+        }
+
+        /* ----- Navigation ----- */
+        .nav-toc {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px 20px;
+            padding: 20px 0 10px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.06);
+            margin-bottom: 32px;
+        }
+
+        .nav-toc a {
+            color: #94a3b8;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.2s;
+            border-bottom: 2px solid transparent;
+            padding-bottom: 4px;
+        }
+        .nav-toc a:hover {
+            color: #e5e7eb;
+            border-bottom-color: #6366f1;
+            text-decoration: none;
+        }
+
+        /* ----- Typography ----- */
+        h2 {
+            font-size: 1.9rem;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            margin: 48px 0 16px;
+            color: #f1f5f9;
+        }
+
+        h2:first-of-type {
+            margin-top: 8px;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin: 28px 0 12px;
+            color: #e2e8f0;
+        }
+
+        p,
+        li {
+            color: #cbd5e1;
+            font-size: 1.05rem;
+        }
+
+        .lead {
+            font-size: 1.2rem;
+            color: #e2e8f0;
+            max-width: 780px;
+        }
+
+        /* ----- Cards ----- */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin: 24px 0 16px;
+        }
+
+        .card {
+            background: rgba(17, 24, 39, 0.70);
+            border: 1px solid rgba(148, 163, 184, 0.10);
+            border-radius: 20px;
+            padding: 24px 22px;
+            backdrop-filter: blur(2px);
+            transition: transform 0.15s ease, border-color 0.2s ease;
+        }
+        .card:hover {
+            border-color: rgba(99, 102, 241, 0.25);
+            transform: translateY(-3px);
+        }
+
+        .card .emoji-big {
+            font-size: 2.4rem;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .card h4 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #f1f5f9;
+            margin-bottom: 8px;
+        }
+
+        .card p {
+            font-size: 1rem;
+            color: #94a3b8;
+        }
+
+        /* ----- Callouts ----- */
+        .callout {
+            background: rgba(99, 102, 241, 0.06);
+            border-left: 4px solid #6366f1;
+            border-radius: 12px;
+            padding: 18px 22px;
+            margin: 24px 0;
+        }
+
+        .callout.warning {
+            background: rgba(239, 68, 68, 0.06);
+            border-left-color: #ef4444;
+        }
+
+        .callout.success {
+            background: rgba(34, 197, 94, 0.06);
+            border-left-color: #22c55e;
+        }
+
+        .callout p {
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        .callout strong {
+            color: #f1f5f9;
+        }
+
+        /* ----- Lists ----- */
+        ul,
+        ol {
+            padding-left: 24px;
+            margin: 12px 0 16px;
+        }
+
+        ul li,
+        ol li {
+            margin-bottom: 6px;
+        }
+
+        /* ----- Code ----- */
+        code {
+            background: rgba(148, 163, 184, 0.08);
+            padding: 2px 10px;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.9rem;
+            color: #c7d2fe;
+            border: 1px solid rgba(148, 163, 184, 0.08);
+        }
+
+        .code-block {
+            background: #0b1324;
+            border: 1px solid rgba(148, 163, 184, 0.10);
+            border-radius: 14px;
+            padding: 16px 20px;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 0.9rem;
+            color: #cbd5e1;
+            overflow-x: auto;
+            margin: 12px 0 20px;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        /* ----- Steps ----- */
+        .step-list {
+            counter-reset: step;
+            list-style: none;
+            padding: 0;
+            margin: 16px 0 8px;
+        }
+
+        .step-list li {
+            counter-increment: step;
+            padding: 14px 16px 14px 56px;
+            position: relative;
+            background: rgba(17, 24, 39, 0.40);
+            border-radius: 14px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(148, 163, 184, 0.06);
+        }
+
+        .step-list li::before {
+            content: counter(step);
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: rgba(99, 102, 241, 0.15);
+            color: #a5b4fc;
+            font-weight: 700;
+            font-size: 0.95rem;
+            display: grid;
+            place-items: center;
+            border: 1px solid rgba(99, 102, 241, 0.20);
+        }
+
+        .step-list li strong {
+            color: #f1f5f9;
+        }
+
+        /* ----- Security flow ----- */
+        .security-flow {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 10px 20px;
+            padding: 20px 10px;
+            margin: 20px 0 10px;
+            background: rgba(17, 24, 39, 0.30);
+            border-radius: 24px;
+            border: 1px solid rgba(148, 163, 184, 0.06);
+        }
+
+        .flow-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 4px;
+        }
+
+        .flow-step .icon {
+            font-size: 2.2rem;
+        }
+
+        .flow-step .label {
+            font-size: 0.8rem;
+            color: #94a3b8;
+            font-weight: 500;
+            max-width: 100px;
+        }
+
+        .flow-arrow {
+            font-size: 1.8rem;
+            color: #475569;
+        }
+
+        /* ----- Footer ----- */
+        .footer-note {
+            margin-top: 56px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(148, 163, 184, 0.08);
+            text-align: center;
+            color: #64748b;
+            font-size: 0.95rem;
+        }
+
+        .footer-note a {
+            color: #818cf8;
+        }
+
+        /* ----- Back button (нижняя) ----- */
+        .back-btn-wrap {
+            display: flex;
+            justify-content: flex-start;
+            margin-top: 24px;
+        }
+
+        .btn {
+            border: 1px solid rgba(148, 163, 184, 0.20);
+            background: rgba(17, 24, 39, 0.80);
+            color: #e5e7eb;
+            border-radius: 12px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font: inherit;
+            transition: background 0.2s, transform 0.1s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            background: rgba(99, 102, 241, 0.20);
+            transform: translateY(-1px);
+        }
+
+        .btn.soft {
+            background: rgba(99, 102, 241, 0.15);
+            border-color: rgba(99, 102, 241, 0.30);
+            color: #c7d2fe;
+        }
+
+        .btn.soft:hover {
+            background: rgba(99, 102, 241, 0.25);
+        }
+
+        /* ----- Responsive ----- */
+        @media (max-width: 720px) {
+            .guide-header {
+                margin-left: -16px;
+                margin-right: -16px;
+                padding: 12px 16px 16px;
+            }
+            .hero {
+                padding: 24px 0 20px;
+            }
+            .logo-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 24px;
+            }
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+            .security-flow {
+                flex-direction: column;
+                gap: 6px;
+            }
+            .flow-arrow {
+                transform: rotate(90deg);
+            }
+            .step-list li {
+                padding: 12px 14px 12px 48px;
+            }
+            .step-list li::before {
+                left: 10px;
+                width: 26px;
+                height: 26px;
+                font-size: 0.8rem;
+            }
+            h2 {
+                font-size: 1.5rem;
+            }
+            .nav-toc {
+                gap: 4px 12px;
+            }
+            .nav-toc a {
+                font-size: 0.8rem;
+            }
+            .guide-header {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+            }
+            .guide-header .brand-small {
+                justify-content: center;
+            }
+            .btn-back {
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 12px 8px 40px;
+            }
+            .badge {
+                font-size: 0.75rem;
+                padding: 4px 10px;
+            }
+            .card {
+                padding: 18px 16px;
+            }
+            .guide-header {
+                margin-left: -8px;
+                margin-right: -8px;
+                padding-left: 8px;
+                padding-right: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        <!-- ====== ШАПКА (прилипающая) ====== -->
+        <header class="guide-header">
+            <div class="brand-small">
+                <img src="ico.png" alt="Securra" />
+                <span>Securra</span>
+            </div>
+            <a href="index.html" class="btn-back">← Назад в приложение</a>
+        </header>
+
+        <!-- ====== HERO ====== -->
+        <header class="hero">
+            <div class="logo-row">
+                <div class="logo-icon">
+                    <img src="ico.png" alt="Securra icon" />
+                </div>
+                <h1>Руководство</h1>
+            </div>
+            <p class="tagline">Надёжное, полностью локальное хранилище паролей с симметричным шифрованием. Ваши данные — только у вас.</p>
+
+            <div class="badge-row">
+                <span class="badge">🔐 Данные только у вас</span>
+                <span class="badge">📁 Локальное шифрование</span>
+                <span class="badge">🧠 Нет серверов</span>
+                <span class="badge">👤 Не требует аккаунта</span>
+            </div>
+        </header>
+
+        <!-- ====== TOC ====== -->
+        <nav class="nav-toc">
+            <a href="#about">О Securra</a>
+            <a href="#security">Безопасность</a>
+            <a href="#how-it-works">Как работает</a>
+            <a href="#usage">Использование</a>
+            <a href="#faq">Частые вопросы</a>
+        </nav>
+
+        <!-- ====== ABOUT ====== -->
+        <section id="about">
+            <h2>Что такое Securra?</h2>
+            <p class="lead">
+                Securra — это современное, безопасное и <strong>полностью локальное</strong> приложение для управления
+                паролями. Оно не имеет серверной части, не передаёт ваши данные в интернет и не хранит их где-либо,
+                кроме вашего собственного устройства.
+            </p>
+
+            <div class="card-grid">
+                <div class="card">
+                    <span class="emoji-big">🔒</span>
+                    <h4>Шифрование на устройстве</h4>
+                    <p>Все данные шифруются симметричным алгоритмом AES‑256‑GCM прямо в вашем браузере. Ключ никогда не покидает ваше устройство.</p>
+                </div>
+                <div class="card">
+                    <span class="emoji-big">📁</span>
+                    <h4>Хранилище — это файл</h4>
+                    <p>Ваш архив паролей сохраняется в виде одного зашифрованного файла (<code>.sec</code>). Вы можете хранить его где угодно: на диске, в облаке, на флешке.</p>
+                </div>
+                <div class="card">
+                    <span class="emoji-big">🧠</span>
+                    <h4>Без серверов и слежки</h4>
+                    <p>Мы не собираем данные, не используем аналитику, не отправляем телеметрию. Всё работает локально. Никаких аккаунтов, никаких облачных синхронизаций.</p>
+                </div>
+            </div>
+
+            <div class="callout success">
+                <p><strong>✅ Главный принцип:</strong> Ваш пароль — это единственный ключ к хранилищу. Мы не можем его восстановить, сбросить или изменить. Сохраните его в надёжном месте.</p>
+            </div>
+        </section>
+
+        <!-- ====== SECURITY ====== -->
+        <section id="security">
+            <h2>Безопасность — наша основа</h2>
+
+            <div class="security-flow">
+                <div class="flow-step">
+                    <span class="icon">📝</span>
+                    <span class="label">Ввод данных</span>
+                </div>
+                <span class="flow-arrow">→</span>
+                <div class="flow-step">
+                    <span class="icon">🔑</span>
+                    <span class="label">Мастер-пароль</span>
+                </div>
+                <span class="flow-arrow">→</span>
+                <div class="flow-step">
+                    <span class="icon">🔐</span>
+                    <span class="label">AES‑256‑GCM</span>
+                </div>
+                <span class="flow-arrow">→</span>
+                <div class="flow-step">
+                    <span class="icon">📁</span>
+                    <span class="label">Зашифрованный файл</span>
+                </div>
+                <span class="flow-arrow">→</span>
+                <div class="flow-step">
+                    <span class="icon">🧑‍💻</span>
+                    <span class="label">Только на вашем устройстве</span>
+                </div>
+            </div>
+
+            <h3>Как защищены ваши данные</h3>
+            <ul>
+                <li><strong>Симметричное шифрование AES‑256‑GCM</strong> — отраслевой стандарт, используемый спецслужбами и банками.</li>
+                <li><strong>Ключ выводится из мастер-пароля</strong> через PBKDF2 с 310 000 итераций (стойкость к перебору).</li>
+                <li><strong>Случайная соль (salt)</strong> генерируется для каждого хранилища — это делает невозможным использование радужных таблиц.</li>
+                <li><strong>Вектор инициализации (IV)</strong> уникален для каждой операции шифрования — даже одинаковые пароли выглядят по-разному.</li>
+                <li><strong>Все операции выполняются в браузере</strong> с использованием Web Crypto API — защищённого криптографического движка.</li>
+            </ul>
+
+            <div class="callout warning">
+                <p><strong>⚠️ Важно:</strong> Поскольку ключ шифрования генерируется только из вашего мастер-пароля, <strong>восстановить доступ к хранилищу невозможно</strong> без него. Securra не хранит пароль, не передаёт его и не может его сбросить. Это цена безопасности.</p>
+            </div>
+
+            <h3>Почему это безопаснее облачных менеджеров?</h3>
+            <ul>
+                <li><strong>Нет единой точки взлома</strong> — данные не хранятся на серверах, которые могут быть скомпрометированы.</li>
+                <li><strong>Нет передачи данных по сети</strong> — всё шифрование и расшифрование происходит локально.</li>
+                <li><strong>Нет зависимости от сторонних сервисов</strong> — вы не рискуете потерять доступ из-за блокировки или закрытия сервиса.</li>
+                <li><strong>Полный контроль</strong> — вы сами решаете, где и как хранить свой файл хранилища.</li>
+            </ul>
+        </section>
+
+        <!-- ====== HOW IT WORKS ====== -->
+        <section id="how-it-works">
+            <h2>Как это работает?</h2>
+
+            <h3>Архитектура в двух словах</h3>
+            <p>
+                Securra — это одностраничное приложение (SPA), написанное на чистом JavaScript. Вся логика
+                шифрования, хранения и управления паролями выполняется в вашем браузере. Приложение не использует
+                серверные вызовы, не отправляет данные в интернет и не требует подключения к сети.
+            </p>
+
+            <div class="code-block">
+                // Упрощённая схема работы
+                1. Вы создаёте хранилище и задаёте мастер-пароль.
+                2. Из пароля выводится ключ шифрования (PBKDF2 + соль).
+                3. Все записи шифруются ключом (AES‑256‑GCM).
+                4. Зашифрованные данные сохраняются в файл .sec.
+                5. При открытии файл расшифровывается локально тем же ключом.
+            </div>
+
+            <h3>Основные этапы работы</h3>
+            <ol class="step-list">
+                <li>
+                    <strong>Создание хранилища</strong> — задайте мастер-пароль (не менее 6 символов).
+                    Приложение генерирует случайную соль и создаёт зашифрованный контейнер.
+                </li>
+                <li>
+                    <strong>Добавление записей</strong> — для каждого ресурса вы можете сохранить название, почту,
+                    телефон, пароль, комментарий и теги. Все поля шифруются.
+                </li>
+                <li>
+                    <strong>Сохранение</strong> — <strong>все изменения сохраняются автоматически</strong> сразу после их внесения.
+                    Кнопки «Сохранить изменения» и «Сохранить как» предназначены для дополнительного контроля:
+                    вы можете явно сохранить текущее состояние или создать копию хранилища в другом месте.
+                </li>
+                <li>
+                    <strong>Открытие</strong> — выберите файл хранилища, введите мастер-пароль.
+                    Данные расшифровываются локально и отображаются в интерфейсе.
+                </li>
+                <li>
+                    <strong>Автоблокировка</strong> — через 5 минут бездействия хранилище автоматически закрывается,
+                    все данные очищаются из памяти браузера.
+                </li>
+            </ol>
+
+            <div class="callout">
+                <p><strong>💡 Важно:</strong> Благодаря автосохранению вы можете не беспокоиться о потере изменений.
+                Кнопки «Сохранить» и «Сохранить как» служат для вашего спокойствия и позволяют управлять версиями файла.</p>
+            </div>
+        </section>
+
+        <!-- ====== USAGE ====== -->
+        <section id="usage">
+            <h2>Руководство по использованию</h2>
+
+            <h3>🔐 Создание нового хранилища</h3>
+            <ol class="step-list">
+                <li>На экране авторизации выберите вкладку <strong>«Создать хранилище»</strong>.</li>
+                <li>Придумайте и введите надёжный мастер-пароль (дважды).</li>
+                <li>Нажмите <strong>«Создать»</strong> — откроется диалог сохранения файла.</li>
+                <li>Укажите имя файла (по умолчанию <code>securra.sec</code>) и выберите папку.</li>
+                <li>После сохранения вы попадёте в основное приложение — хранилище готово к работе.</li>
+            </ol>
+
+            <h3>📂 Открытие существующего хранилища</h3>
+            <ol class="step-list">
+                <li>На экране авторизации выберите вкладку <strong>«Открыть хранилище»</strong>.</li>
+                <li>Нажмите <strong>«Выбрать файл»</strong> и укажите файл <code>.sec</code> или <code>.json</code>.</li>
+                <li>Введите мастер-пароль.</li>
+                <li>Нажмите <strong>«Открыть»</strong> — данные расшифруются и загрузятся.</li>
+            </ol>
+
+            <h3>➕ Добавление записи</h3>
+            <ol class="step-list">
+                <li>В основном окне нажмите <strong>«+ Добавить»</strong>.</li>
+                <li>Заполните поля: <em>Название ресурса</em> (обязательно) и <em>Пароль</em> (обязательно).</li>
+                <li>Опционально: укажите почту, телефон, комментарий, добавьте теги.</li>
+                <li>Нажмите <strong>«Сохранить»</strong> — запись появится в таблице (изменение сразу сохраняется автоматически).</li>
+            </ol>
+
+            <h3>✏️ Редактирование и удаление</h3>
+            <ul>
+                <li><strong>Редактировать</strong> — нажмите на строку в таблице, затем на значок ✎ (карандаш) в правой части строки или в боковой панели.</li>
+                <li><strong>Удалить</strong> — нажмите на значок 🗑 (корзина) в строке записи или в боковой панели.</li>
+                <li><strong>Быстрый просмотр</strong> — кликните на строку в таблице, чтобы увидеть подробную информацию в боковой панели.</li>
+            </ul>
+
+            <h3>💾 Сохранение изменений</h3>
+            <ul>
+                <li><strong>Автосохранение</strong> — каждое изменение (добавление, редактирование, удаление) автоматически записывается в файл хранилища. Вам не нужно беспокоиться о потере данных.</li>
+                <li><strong>«Сохранить изменения»</strong> — принудительно перезаписывает текущий файл (обычно не требуется, но может быть полезно для проверки).</li>
+                <li><strong>«Сохранить как»</strong> — создаёт копию хранилища в новом месте или под другим именем.</li>
+            </ul>
+
+            <div class="callout success">
+                <p><strong>✅ Автосохранение включено:</strong> все ваши правки сохраняются мгновенно. Кнопки сохранения — для вашего спокойствия и гибкости.</p>
+            </div>
+        </section>
+
+        <!-- ====== FAQ ====== -->
+        <section id="faq">
+            <h2>Часто задаваемые вопросы</h2>
+
+            <h3>Что произойдёт, если я потеряю мастер-пароль?</h3>
+            <p>
+                <strong>Данные будут утеряны безвозвратно.</strong> Поскольку шифрование происходит локально и ключ
+                не сохраняется нигде, восстановить доступ к хранилищу невозможно. Мы не храним ваш пароль и не
+                имеем механизмов его сброса. <strong>Сохраните пароль в надёжном месте</strong> (например, в физическом
+                сейфе или в другом менеджере паролей).
+            </p>
+
+            <h3>Могу ли я использовать Securra на нескольких устройствах?</h3>
+            <p>
+                Да. Для этого просто скопируйте файл хранилища (<code>.sec</code>) на другое устройство и откройте
+                его там через браузер с поддержкой Web Crypto API (Chrome, Edge, Firefox, Safari). Убедитесь, что
+                у вас есть мастер-пароль.
+            </p>
+
+            <h3>Какие браузеры поддерживаются?</h3>
+            <p>
+                Securra использует <strong>Web Crypto API</strong>, который поддерживается всеми современными браузерами:
+                Chrome, Edge, Firefox, Safari (начиная с версии 15.4), Opera и другими на основе Chromium.
+                Для работы с файловой системой (сохранение/открытие) рекомендуется использовать
+                <strong>Chrome или Edge</strong> (поддержка File System Access API).
+            </p>
+
+            <h3>Безопасно ли хранить файл в облаке (Google Drive, Dropbox и т.д.)?</h3>
+            <p>
+                Да, это безопасно. Файл хранилища всегда зашифрован, и без мастер-пароля его содержимое невозможно
+                прочитать. Вы можете синхронизировать его через любое облачное хранилище — это не снижает уровень
+                защиты.
+            </p>
+
+            <h3>Что означает «автоблокировка через 5 минут»?</h3>
+            <p>
+                Если вы не взаимодействуете с приложением в течение 5 минут, хранилище автоматически закрывается.
+                Все данные очищаются из памяти, и вам нужно заново ввести мастер-пароль. Это защищает ваши данные
+                в случае, если вы отошли от компьютера.
+            </p>
+
+            <h3>Почему я должен доверять Securra?</h3>
+            <p>
+                Securra — это <strong>полностью открытая и прозрачная</strong> система. Всё приложение работает локально
+                в вашем браузере. Вы можете проверить код, открыв инструменты разработчика, или изучить
+                <a href="https://github.com/ssecurra/ssecurra.github.io" target="_blank" rel="noopener noreferrer">исходный код на GitHub</a>.
+                Нет серверных запросов, нет аналитики, нет скрытых передач данных. Безопасность достигается не обещаниями, а криптографией и архитектурой.
+            </p>
+        </section>
+
+        <!-- ====== КНОПКА НАЗАД (внизу) ====== -->
+        <div class="back-btn-wrap">
+            <a href="index.html" class="btn soft">← Назад в приложение</a>
+        </div>
+
+        <!-- ====== FOOTER ====== -->
+        <div class="footer-note">
+            <p>
+                Securra — ваше личное, надёжное и безопасное хранилище паролей.<br />
+                Все данные принадлежат только вам. 🔐
+            </p>
+            <p style="margin-top:8px; font-size:0.85rem;">
+                Версия 1.0 · <a href="https://github.com/ssecurra/ssecurra.github.io" target="_blank" rel="noopener noreferrer">GitHub</a> · Сделано с ❤️
+            </p>
+        </div>
+
+
+
+    </div>
+
+</body>
+</html>
